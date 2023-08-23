@@ -8,8 +8,8 @@ const playTime = 1000;
 const keyStorage = 'videoplayer-current-time';
 
 const onPlay = keyTime => {
-  player.getEnded().then(end => {
-    if (end) {
+  player.getEnded().then(ended => {
+    if (ended) {
       localStorage.setItem(keyStorage, 0);
     } else {
       localStorage.setItem(keyStorage, Number(keyTime.seconds));
