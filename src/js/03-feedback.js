@@ -21,22 +21,24 @@ form.addEventListener(
   }, updateStorageTime)
 );
 //pobieramy to co zapisalismy i dodajemy do formularza
-window.addEventListener('load', () => {
+window.addEventListener('load', e => {
   // tutaj cała logika pobrania z localStorage i wrzucenia do formularza/ustawienia value
   return JSON.parse(localStorage.getItem(localStorageKey));
-  if (formData) {
-    email.value = formData.email;
-    message.value = formData.message;
-  }
 });
+
 function getSavedData() {
   try {
     return JSON.parse(localStorage.getItem(localStorageKey)) || {};
   } catch (error) {
     console.log(`${error.email}: ${error.message}`);
   }
+  if (formData) {
+    email.value = formData.email;
+    message.value = formData.message;
+  }
   localStorage.removeItem(localStorageKey.reset());
 }
+
 //usługa submit do czyszczenia localeStorage
 form.addEventListener('submit', e => {
   e.preventDefault();
