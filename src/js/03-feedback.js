@@ -1,47 +1,45 @@
 import throttle from 'lodash.throttle';
 //pobieram elementy
-const feedbackForm = document.querySelector('.feedback-form');
-const { email, message } = feedbackForm.elements;
+const form = document.querySelector('.feedback-form');
+const { email, message } = form.elements;
 //tworze klucz do localStorage.getItem
-const LOCALSTORAGE_KEY = 'feedback-form-state';
-
-if (localStorage.getItem('LOCALSTORAGE_KEY') !== null) {
-  input.value = localStorage.getItem('LOCALSTORAGE_KEY');
-}
-input.addEventListener('input', e => {
-  localStorage.setItem('LOCALSTORAGE_KEY', input.value);
+const localStorageKey = 'feedback-form-state';
+const updateStorageTime = 500;
+const formData = getSavedData;
+//dodawanie do localeStorage
+form.addEventListener('input', e => {
+  localStorage.setItem(
+    localStorageKey,
+    JSON.stringify({ email: email.value, message: message.value })
+  );
+  localStorage.getItem(localStorageKey);
 });
-
-if (localStorage.getItem('LOCALSTORAGE_KEY') !== null) {
-  textarea.value = localStorage.getItem('LOCALSTORAGE_KEY');
-}
-textarea.addEventListener('input', e => {
-  localStorage.setItem('LOCALSTORAGE_KEY', textarea.value);
-});
-
-feedbackForm.addEventListener(
+form.addEventListener(
   'input',
-  _.throttle(() => {
-    console.log('Input handler call every 500ms');
-  }, 500)
+  throttle(() => {
+    console.log(`Input handler call every ${updateStorageTime}`);
+  }, updateStorageTime)
 );
-
-function saveMessage(evt) {
-  evt.preventDefault();
-  localStorage.setItem(LOCALSTORAGE_KEY, feedbackForm.elements.message.value);
-  feedbackForm.reset();
-}
-function saveEmail(evt) {
-  evt.preventDefault();
-  localStorage.setItem(LOCALSTORAGE_KEY, feedbackForm.elements.email.value);
-  feedbackForm.reset();
-}
-
-feedbackForm.addEventListener('submit', e => {
-  localStorage.removeItem('LOCALSTORAGE_KEY');
+//pobieramy to co zapisalismy i dodajemy do formularza
+window.addEventListener('load', () => {
+  // tutaj cała logika pobrania z localStorage i wrzucenia do formularza/ustawienia value
+  return JSON.parse(localStorage.getItem(localStorageKey));
+  if (formData) {
+    email.value = formData.email;
+    message.value = formData.message;
+  }
 });
-
-/*function updateOutput() {
-  output.textContent = localStorage.getItem(LOCALSTORAGE_KEY) || '';
+function getSavedData() {
+  try {
+    return JSON.parse(localStorage.getItem(localStorageKey)) || {};
+  } catch (error) {
+    console.log(`${error.email}: ${error.message}`);
+  }
+  localStorage.removeItem(localStorageKey.reset());
 }
-*/
+//usługa submit do czyszczenia localeStorage
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  localStorage.removeItem(e.currentTarget.reset());
+  console.log(formData);
+});
