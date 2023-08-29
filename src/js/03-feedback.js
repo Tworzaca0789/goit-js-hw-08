@@ -1,25 +1,28 @@
 import throttle from 'lodash.throttle';
+const updateStorageTime = 500;
 //pobieram elementy
 const form = document.querySelector('.feedback-form');
 const { email, message } = form.elements;
 //tworze klucz do localStorage.getItem
 const localStorageKey = 'feedback-form-state';
-const updateStorageTime = 500;
+
 const formData = getSavedData;
 //dodawanie do localeStorage
-form.addEventListener('input', e => {
+form.addEventListener('input', throttle(inputForm, updateStorageTime));
+function inputForm(e) {
   localStorage.setItem(
     localStorageKey,
     JSON.stringify({ email: email.value, message: message.value })
   );
   localStorage.getItem(localStorageKey);
-});
-form.addEventListener(
+}
+/*form.addEventListener(
   'input',
   throttle(() => {
     console.log(`Input handler call every ${updateStorageTime}`);
   }, updateStorageTime)
 );
+*/
 //pobieramy to co zapisalismy i dodajemy do formularza
 window.addEventListener('load', e => {
   // tutaj cała logika pobrania z localStorage i wrzucenia do formularza/ustawienia value
@@ -33,8 +36,8 @@ function getSavedData() {
     console.log(`${error.email}: ${error.message}`);
   }
   if (formData) {
-    email.value = formData.email;
-    message.value = formData.message;
+    email.value = formData.email || '';
+    message.value = formData.message || '';
   }
   localStorage.removeItem(localStorageKey.reset());
 }
