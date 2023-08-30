@@ -22,8 +22,8 @@ window.addEventListener('load', e => {
 
   if (formData) {
     const parsedData = JSON.parse(formData);
-    email.value = formData.email || '';
-    message.value = formData.message || '';
+    email.value = parsedData.email || '';
+    message.value = parsedData.message || '';
   }
 });
 
